@@ -6,47 +6,40 @@
     android:layout_height="match_parent"
     tools:context="com.github.justej.onetaplogger.MainActivity">
 
-    <Button
-        android:id="@+id/sleepButton"
+    <TextView
+        android:id="@+id/chooseActionTextView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginBottom="16dp"
-        android:layout_marginStart="16dp"
-        android:onClick="storeActionTime"
-        android:text="@string/Sleep"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toStartOf="@+id/wakeUpButton"
-        app:layout_constraintHorizontal_bias="0.5"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/chooseActionLabel" />
-
-    <Button
-        android:id="@+id/wakeUpButton"
-        android:layout_width="wrap_content"
-        android:layout_height="46dp"
-        android:layout_marginEnd="16dp"
-        android:layout_marginStart="16dp"
-        android:onClick="storeActionTime"
-        android:text="@string/WakeUp"
-        app:layout_constraintBaseline_toBaselineOf="@+id/sleepButton"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.5"
-        app:layout_constraintStart_toEndOf="@+id/sleepButton" />
-
-    <TextView
-        android:id="@+id/chooseActionLabel"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="16dp"
         android:ems="10"
         android:text="@string/ChooseTheAction"
         android:textAlignment="center"
         android:textSize="24sp"
-        app:layout_constraintBottom_toTopOf="@+id/sleepButton"
+        app:layout_constraintBottom_toTopOf="@+id/sleepTextView"
         app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/lastActionLabel" />
+        app:layout_constraintRight_toRightOf="parent" />
+
+    <TextView
+        android:id="@+id/sleepTextView"
+        android:layout_width="wrap_content"
+        android:layout_height="19dp"
+        android:text="@string/Sleep"
+        app:layout_constraintBottom_toTopOf="@+id/fabSleep"
+        app:layout_constraintEnd_toEndOf="@+id/fabSleep"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toStartOf="@+id/fabSleep" />
+
+    <TextView
+        android:id="@+id/wakeUpTextView"
+        android:layout_width="wrap_content"
+        android:layout_height="19dp"
+        android:text="@string/WakeUp"
+        app:layout_constraintBottom_toBottomOf="@+id/sleepTextView"
+        app:layout_constraintEnd_toEndOf="@+id/fabWakeUp"
+        app:layout_constraintStart_toStartOf="@+id/fabWakeUp"
+        app:layout_constraintTop_toTopOf="@+id/sleepTextView"
+        tools:layout_editor_absoluteY="282dp" />
 
     <EditText
         android:id="@+id/lastActionLabel"
@@ -60,7 +53,43 @@
         android:focusableInTouchMode="false"
         android:inputType="none"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
+
+    <android.support.design.widget.FloatingActionButton
+        android:id="@+id/fabWakeUp"
+        android:layout_width="100dp"
+        android:layout_height="100dp"
+        android:clickable="true"
+        android:focusable="true"
+        app:elevation="20dp"
+        app:fabSize="normal"
+        app:layout_constraintBottom_toBottomOf="@+id/fabSleep"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toEndOf="@+id/fabSleep"
+        app:layout_constraintTop_toTopOf="@+id/fabSleep"
+        app:layout_constraintVertical_bias="0.0"
+        app:srcCompat="@android:drawable/ic_lock_idle_alarm" />
+
+    <android.support.design.widget.FloatingActionButton
+        android:id="@+id/fabSleep"
+        android:layout_width="100dp"
+        android:layout_height="100dp"
+        android:layout_marginBottom="16dp"
+        android:layout_marginTop="16dp"
+        android:clickable="true"
+        android:focusable="true"
+        app:backgroundTint="@android:color/holo_green_light"
+        app:elevation="20dp"
+        app:fabSize="normal"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toStartOf="@+id/fabWakeUp"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/lastActionLabel"
+        app:layout_constraintVertical_bias="0.7"
+        app:srcCompat="@android:drawable/ic_lock_power_off" />
 
 </android.support.constraint.ConstraintLayout>

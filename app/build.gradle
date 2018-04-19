@@ -35,4 +35,5 @@ dependencies {
     implementation "android.arch.persistence.room:runtime:1.0.0"
     kapt "android.arch.persistence.room:compiler:1.0.0"
     compile "org.jetbrains.kotlin:kotlin-reflect:1.2.31"
+    implementation 'com.android.support:design:26.1.0'
 }

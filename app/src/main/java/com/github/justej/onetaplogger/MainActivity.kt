@@ -2,10 +2,10 @@ package com.github.justej.onetaplogger
 
 import android.annotation.SuppressLint
 import android.os.Bundle
+import android.support.design.widget.FloatingActionButton
 import android.support.v7.app.AppCompatActivity
 import android.util.Log
 import android.view.View
-import android.widget.Button
 import android.widget.TextView
 import java.text.SimpleDateFormat
 import java.util.*
@@ -15,19 +15,36 @@ class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
+
+        val fabSleep: FloatingActionButton = findViewById(R.id.fabSleep)
+        val fabWakeUp: FloatingActionButton = findViewById(R.id.fabWakeUp)
+
+        fabSleep.setOnClickListener { onClickListener(it) }
+        fabWakeUp.setOnClickListener { onClickListener(it) }
+
         val db = SleepLogDatabase.getInstance(this)
         val latest = db?.sleepLogDao()?.get(1, 0)
         updateLastAction(if (latest!!.isEmpty()) null else latest[0])
     }
 
-    fun storeActionTime(view: View) {
+    private fun onClickListener(view: View) {
+        storeActionTime(view)
+    }
+
+    private fun storeActionTime(view: View) {
         try {
-            if (view is Button) {
-                val db = SleepLogDatabase.getInstance(this)
-                val timestamp = Date().time
-                db?.sleepLogDao()?.insert(SleepLogData(null, timestamp, view.text.toString()))
-                updateLastAction(SleepLogData(null, timestamp, view.text.toString()))
+            val db = SleepLogDatabase.getInstance(this)
+            val timestamp = Date().time
+            if (view !is FloatingActionButton) {
+                return
             }
+            val label = when (view.id) {
+                R.id.fabSleep -> getString(R.string.Sleep)
+                R.id.fabWakeUp -> getString(R.string.WakeUp)
+                else -> return
+            }
+            db?.sleepLogDao()?.insert(SleepLogData(null, timestamp, label))
+            updateLastAction(SleepLogData(null, timestamp, label))
         } catch (e: Exception) {
             Log.e(MainActivity::class.qualifiedName, "Generic error", e)
         }
