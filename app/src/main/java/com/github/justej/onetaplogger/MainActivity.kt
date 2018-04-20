@@ -52,14 +52,20 @@ class MainActivity : AppCompatActivity() {
 
     @SuppressLint("SimpleDateFormat")
     private fun updateLastAction(latest: SleepLogData?) {
-        val lastAction = findViewById<TextView>(R.id.lastActionLabel)
+        val lastAction = findViewById<TextView>(R.id.lastActionTextView)
         if (latest == null) {
             lastAction.text = String.format(getString(R.string.LastAction), getString(R.string.NoData))
         } else {
             val (_, timestamp, label, comment) = latest
+            val labelColor = when (label) {
+                getString(R.string.Sleep) -> getColor(R.color.colorSleep)
+                getString(R.string.WakeUp) -> getColor(R.color.colorWakeUp)
+                else -> getColor(R.color.colorBackground)
+            }
             val formattedTime = SimpleDateFormat("dd/MM/yyyy hh:mm:ss").format(timestamp)
             val text = String.format(getString(R.string.LastAction), "$label\n$formattedTime\n$comment")
             lastAction.text = text
+            lastAction.setBackgroundColor(labelColor)
         }
     }
 }
