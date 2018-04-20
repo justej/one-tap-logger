@@ -17,10 +17,10 @@ data class SleepLogData(@PrimaryKey(autoGenerate = true) var id: Long?,
 
 @Dao
 interface SleepLogDao {
-    @Query("SELECT * from sleepLog ORDER BY timestamp")
+    @Query("SELECT * from sleepLog ORDER BY timestamp DESC")
     fun get(): List<SleepLogData>
 
-    @Query("SELECT * from sleepLog ORDER BY timestamp LIMIT :limit")
+    @Query("SELECT * from sleepLog ORDER BY timestamp DESC LIMIT :limit")
     fun get(limit: Long): List<SleepLogData>
 
     @Query("SELECT * from sleepLog ORDER BY timestamp DESC LIMIT :limit OFFSET :offset")

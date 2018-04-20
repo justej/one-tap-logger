@@ -10,7 +10,7 @@
         android:id="@+id/chooseActionTextView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="16dp"
+        android:layout_marginBottom="@dimen/default_layout_margin"
         android:ems="10"
         android:text="@string/ChooseTheAction"
         android:textAlignment="center"
@@ -23,7 +23,7 @@
     <TextView
         android:id="@+id/sleepTextView"
         android:layout_width="wrap_content"
-        android:layout_height="19dp"
+        android:layout_height="wrap_content"
         android:text="@string/Sleep"
         app:layout_constraintBottom_toTopOf="@+id/fabSleep"
         app:layout_constraintEnd_toEndOf="@+id/fabSleep"
@@ -33,24 +33,16 @@
     <TextView
         android:id="@+id/wakeUpTextView"
         android:layout_width="wrap_content"
-        android:layout_height="19dp"
+        android:layout_height="wrap_content"
         android:text="@string/WakeUp"
         app:layout_constraintBottom_toBottomOf="@+id/sleepTextView"
         app:layout_constraintEnd_toEndOf="@+id/fabWakeUp"
         app:layout_constraintStart_toStartOf="@+id/fabWakeUp"
-        app:layout_constraintTop_toTopOf="@+id/sleepTextView"
-        tools:layout_editor_absoluteY="282dp" />
+        app:layout_constraintTop_toTopOf="@+id/sleepTextView" />
 
-    <EditText
+    <include
         android:id="@+id/lastActionTextView"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:clickable="false"
-        android:ems="10"
-        android:focusable="false"
-        android:focusableInTouchMode="false"
-        android:inputType="none"
-        android:padding="10dp"
+        layout="@layout/multiline_text_view"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
@@ -77,8 +69,8 @@
         android:id="@+id/fabSleep"
         android:layout_width="100dp"
         android:layout_height="100dp"
-        android:layout_marginBottom="16dp"
-        android:layout_marginTop="16dp"
+        android:layout_marginBottom="@dimen/default_layout_margin"
+        android:layout_marginTop="@dimen/default_layout_margin"
         android:clickable="true"
         android:focusable="true"
         app:backgroundTint="@color/colorSleep"
