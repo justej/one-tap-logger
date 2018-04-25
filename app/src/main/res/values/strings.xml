@@ -4,5 +4,5 @@
     <string name="WakeUp">Wake up</string>
     <string name="ChooseTheAction">Choose the action</string>
     <string name="NoData">No data</string>
-    <string name="LastAction">Last action:\n%1$s</string>
+    <string name="LastActionFormatter">Last action:\n%1$s</string>
 </resources>
