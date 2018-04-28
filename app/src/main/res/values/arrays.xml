@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string-array name="ActionsOnLogRecord">
+        <item>Edit label</item>
+        <item>Edit date/time</item>
+        <item>Edit comment</item>
+        <item>Delete record</item>
+    </string-array>
+</resources>

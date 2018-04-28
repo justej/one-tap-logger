@@ -21,6 +21,9 @@
             android:name=".LogViewActivity"
             android:parentActivityName=".MainActivity" />
 
+        <activity
+            android:name=".LogRecordActivity"
+            android:parentActivityName=".MainActivity" />
     </application>
 
 </manifest>

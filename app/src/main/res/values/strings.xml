@@ -5,4 +5,6 @@
     <string name="ChooseTheAction">Choose the action</string>
     <string name="NoData">No data</string>
     <string name="LastActionFormatter">Last action:\n%1$s</string>
+    <string name="WhatDoYouWant">What do you wish Master?</string>
+    <string name="LogRecordFormatter">%1$s at %2$s</string>
 </resources>

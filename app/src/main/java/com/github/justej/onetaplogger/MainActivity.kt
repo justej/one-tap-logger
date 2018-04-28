@@ -7,7 +7,7 @@ import android.support.design.widget.FloatingActionButton
 import android.support.v7.app.AppCompatActivity
 import android.util.Log
 import android.view.View
-import android.widget.EditText
+import android.widget.TextView
 import kotlinx.android.synthetic.main.activity_main.*
 import java.util.*
 
@@ -35,7 +35,7 @@ class MainActivity : AppCompatActivity() {
         fabSleep.setOnClickListener { storeActionTime(it) }
         fabWakeUp.setOnClickListener { storeActionTime(it) }
 
-        val lastAction: EditText = findViewById(R.id.lastActionTextView)
+        val lastAction: TextView = findViewById(R.id.lastActionTextView)
         lastAction.setOnClickListener {
             val intent = Intent(this, LogViewActivity::class.java)
             startActivity(intent)
@@ -58,7 +58,7 @@ class MainActivity : AppCompatActivity() {
                     findViewById(lastActionTextView.id), MainActivity.singeLineFormatter,
                     getString(R.string.LastActionFormatter))
         } catch (e: Exception) {
-            Log.e(MainActivity::class.qualifiedName, "Generic error", e)
+            Log.e(this::class.qualifiedName, "Generic error", e)
         }
     }
 }
