@@ -7,7 +7,7 @@
     tools:context="com.github.justej.onetaplogger.MainActivity">
 
     <TextView
-        android:id="@+id/chooseActionLabel"
+        android:id="@+id/choose_action_label"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginBottom="@dimen/default_layout_margin"
@@ -15,33 +15,35 @@
         android:text="@string/ChooseTheAction"
         android:textAlignment="center"
         android:textSize="24sp"
-        app:layout_constraintBottom_toTopOf="@+id/sleepLabel"
+        app:layout_constraintBottom_toTopOf="@+id/sleep_label"
         app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent" />
 
     <TextView
-        android:id="@+id/sleepLabel"
+        android:id="@+id/sleep_label"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/Sleep"
-        app:layout_constraintBottom_toTopOf="@+id/sleepFAB"
-        app:layout_constraintEnd_toEndOf="@+id/sleepFAB"
+        android:labelFor="@+id/sleep_fab"
+        app:layout_constraintBottom_toTopOf="@+id/sleep_fab"
+        app:layout_constraintEnd_toEndOf="@+id/sleep_fab"
         app:layout_constraintHorizontal_bias="0.5"
-        app:layout_constraintStart_toStartOf="@+id/sleepFAB" />
+        app:layout_constraintStart_toStartOf="@+id/sleep_fab" />
 
     <TextView
-        android:id="@+id/wakeUpLabel"
+        android:id="@+id/wake_up_label"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/WakeUp"
-        app:layout_constraintBottom_toBottomOf="@+id/sleepLabel"
-        app:layout_constraintEnd_toEndOf="@+id/wakeUpFAB"
-        app:layout_constraintStart_toStartOf="@+id/wakeUpFAB"
-        app:layout_constraintTop_toTopOf="@+id/sleepLabel" />
+        android:labelFor="@+id/wake_up_fab"
+        app:layout_constraintBottom_toBottomOf="@+id/sleep_label"
+        app:layout_constraintEnd_toEndOf="@+id/wake_up_fab"
+        app:layout_constraintStart_toStartOf="@+id/wake_up_fab"
+        app:layout_constraintTop_toTopOf="@+id/sleep_label" />
 
     <include
-        android:id="@+id/lastActionTextView"
+        android:id="@+id/last_action_text_view"
         layout="@layout/multiline_text_view"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
@@ -49,38 +51,38 @@
         app:layout_constraintTop_toTopOf="parent" />
 
     <android.support.design.widget.FloatingActionButton
-        android:id="@+id/wakeUpFAB"
+        android:id="@+id/wake_up_fab"
         android:layout_width="100dp"
         android:layout_height="100dp"
         android:clickable="true"
         android:focusable="true"
-        app:backgroundTint="@color/colorWakeUp"
+        app:backgroundTint="@color/wake_up"
         app:elevation="20dp"
         app:fabSize="normal"
-        app:layout_constraintBottom_toBottomOf="@+id/sleepFAB"
+        app:layout_constraintBottom_toBottomOf="@+id/sleep_fab"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.5"
-        app:layout_constraintStart_toEndOf="@+id/sleepFAB"
-        app:layout_constraintTop_toTopOf="@+id/sleepFAB"
+        app:layout_constraintStart_toEndOf="@+id/sleep_fab"
+        app:layout_constraintTop_toTopOf="@+id/sleep_fab"
         app:layout_constraintVertical_bias="0.0"
         app:srcCompat="@android:drawable/ic_lock_idle_alarm" />
 
     <android.support.design.widget.FloatingActionButton
-        android:id="@+id/sleepFAB"
+        android:id="@+id/sleep_fab"
         android:layout_width="100dp"
         android:layout_height="100dp"
         android:layout_marginBottom="@dimen/default_layout_margin"
         android:layout_marginTop="@dimen/default_layout_margin"
         android:clickable="true"
         android:focusable="true"
-        app:backgroundTint="@color/colorSleep"
+        app:backgroundTint="@color/sleep"
         app:elevation="20dp"
         app:fabSize="normal"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toStartOf="@+id/wakeUpFAB"
+        app:layout_constraintEnd_toStartOf="@+id/wake_up_fab"
         app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/lastActionTextView"
+        app:layout_constraintTop_toBottomOf="@+id/last_action_text_view"
         app:layout_constraintVertical_bias="0.7"
         app:srcCompat="@android:drawable/ic_lock_power_off" />
 

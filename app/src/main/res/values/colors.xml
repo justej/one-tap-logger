@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="colorPrimary">#3F51B5</color>
-    <color name="colorPrimaryDark">#303F9F</color>
-    <color name="colorAccent">@color/colorWakeUp</color>
-    <color name="colorSleep">@android:color/holo_green_light</color>
-    <color name="colorWakeUp">#FF4081</color>
-    <color name="colorBackground">@android:color/background_light</color>
+    <color name="primary">#3F51B5</color>
+    <color name="primary_dark">#303F9F</color>
+    <color name="accent">@color/wake_up</color>
+    <color name="sleep">#FF99CC00</color>
+    <color name="wake_up">#FF4081</color>
+    <color name="background">@android:color/background_light</color>
 </resources>

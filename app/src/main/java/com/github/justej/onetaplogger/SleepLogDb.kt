@@ -5,7 +5,7 @@ import android.arch.persistence.room.OnConflictStrategy.REPLACE
 import android.content.Context
 
 @Entity(tableName = "sleepLog")
-data class SleepLogData(@PrimaryKey(autoGenerate = true) var id: Long?,
+data class SleepLogData(@PrimaryKey(autoGenerate = true) var id: Int?,
                         @ColumnInfo(name = "timestamp") var timestamp: Long,
                         @ColumnInfo(name = "label") var label: String,
                         @ColumnInfo(name = "comment") var comment: String = "") {
@@ -35,8 +35,8 @@ interface SleepLogDao {
     @Update(onConflict = REPLACE)
     fun update(sleepLogData: SleepLogData)
 
-    @Query("DELETE FROM sleepLog")
-    fun delete()
+    @Query("DELETE FROM sleepLog WHERE timestamp = :timestamp")
+    fun delete(timestamp: Long)
 }
 
 @Database(entities = [(SleepLogData::class)], version = 1)

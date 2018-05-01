@@ -7,4 +7,7 @@
     <string name="LastActionFormatter">Last action:\n%1$s</string>
     <string name="WhatDoYouWant">What do you wish Master?</string>
     <string name="LogRecordFormatter">%1$s at %2$s</string>
+    <string name="comment">Comment</string>
+    <string name="hint_enter_comment">Enter a comment here</string>
+    <string name="Error">Oops, an error occurred</string>
 </resources>

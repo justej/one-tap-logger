@@ -6,51 +6,50 @@
     android:layout_height="match_parent"
     tools:context="com.github.justej.onetaplogger.LogRecordActivity">
 
-    <TextView
-        android:id="@+id/DateTextView"
-        android:layout_width="wrap_content"
+    <Button
+        android:id="@+id/date_text_view"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginEnd="8dp"
-        android:layout_marginStart="8dp"
-        android:layout_marginTop="8dp"
+        android:layout_marginEnd="@dimen/default_layout_margin"
+        android:layout_marginStart="@dimen/default_layout_margin"
+        android:layout_marginTop="@dimen/default_layout_margin"
+        android:background="@drawable/rounded_button"
+        android:textAlignment="center"
+        android:textSize="@dimen/default_text_size"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
-    <TextView
-        android:id="@+id/TimeTextView"
-        android:layout_width="wrap_content"
+    <Button
+        android:id="@+id/time_text_view"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginEnd="8dp"
-        android:layout_marginStart="8dp"
-        android:layout_marginTop="8dp"
+        android:layout_marginEnd="@dimen/default_layout_margin"
+        android:layout_marginStart="@dimen/default_layout_margin"
+        android:layout_marginTop="@dimen/default_layout_margin"
+        android:background="@drawable/rounded_button"
+        android:textAlignment="center"
+        android:textSize="@dimen/default_text_size"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/DateTextView" />
-
-    <TextView
-        android:id="@+id/commentLabel"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginEnd="8dp"
-        android:layout_marginStart="8dp"
-        android:layout_marginTop="8dp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/TimeTextView" />
+        app:layout_constraintTop_toBottomOf="@+id/date_text_view" />
 
     <EditText
-        android:id="@+id/commentEditText"
+        android:id="@+id/comment_edit_text"
         android:layout_width="0dp"
         android:layout_height="0dp"
-        android:layout_marginBottom="8dp"
-        android:layout_marginEnd="8dp"
-        android:layout_marginStart="8dp"
-        android:layout_marginTop="8dp"
+        android:layout_marginBottom="@dimen/default_layout_margin"
+        android:layout_marginEnd="0dp"
+        android:layout_marginStart="0dp"
+        android:layout_marginTop="@dimen/default_layout_margin"
         android:ems="10"
+        android:gravity="top"
+        android:hint="@string/hint_enter_comment"
         android:inputType="textMultiLine"
+        android:padding="@dimen/default_text_padding"
+        android:scrollbars="vertical"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/commentLabel" />
+        app:layout_constraintTop_toBottomOf="@+id/time_text_view" />
 </android.support.constraint.ConstraintLayout>

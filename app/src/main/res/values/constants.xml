@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="extras_label">label</string>
+    <string name="extras_timestamp">timestamp</string>
+    <string name="extras_comment">comment</string>
+</resources>
