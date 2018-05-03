@@ -23,6 +23,7 @@ class LogRecordActivity : AppCompatActivity() {
     private lateinit var newDate: Date
     private lateinit var initialDate: Date
     private var secondsAndMilliseconds: Long = 0
+    private lateinit var commentView: EditText
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -30,7 +31,7 @@ class LogRecordActivity : AppCompatActivity() {
 
         val dateView: TextView = findViewById(R.id.date_text_view)
         val timeView: TextView = findViewById(R.id.time_text_view)
-        val commentView: EditText = findViewById(R.id.comment_edit_text)
+        commentView = findViewById(R.id.comment_edit_text)
 
         val timestamp: Long = intent.getLongExtra(getString(R.string.extras_timestamp), 0)
         val comment: String = intent.getStringExtra(getString(R.string.extras_comment))
@@ -60,7 +61,8 @@ class LogRecordActivity : AppCompatActivity() {
                         this@LogRecordActivity,
                         style,
                         { datePicker: DatePicker, year: Int, month: Int, day: Int ->
-                            updateDateOnChange(year - START_OF_EPOCH, month, day)
+                            newDate = Date(year - START_OF_EPOCH, month, day, newDate.hours, newDate.minutes)
+                            text = DateFormat.getDateFormat(this@LogRecordActivity).format(newDate.time)
                         },
                         newDate.year + START_OF_EPOCH,
                         newDate.month,
@@ -77,7 +79,8 @@ class LogRecordActivity : AppCompatActivity() {
                         this@LogRecordActivity,
                         style,
                         { timePicker, hours, minutes ->
-                            updateTimeOnChange(hours, minutes)
+                            newDate = Date(newDate.year, newDate.month, newDate.date, hours, minutes)
+                            text = DateFormat.getTimeFormat(this@LogRecordActivity).format(newDate.time)
                         },
                         newDate.hours,
                         newDate.minutes,
@@ -106,33 +109,27 @@ class LogRecordActivity : AppCompatActivity() {
         }
     }
 
-    private fun updateDateOnChange(year: Int, month: Int, day: Int) {
-        newDate = Date(year, month, day, newDate.hours, newDate.minutes)
-    }
-
-    private fun updateTimeOnChange(hours: Int, minutes: Int) {
-        newDate = Date(newDate.year, newDate.month, newDate.date, hours, minutes)
-    }
-
     override fun onOptionsItemSelected(item: MenuItem?): Boolean {
         if (android.R.id.home == item?.itemId) {
             if (newDate != initialDate || commentChanged) {
-                // TODO: update DB here
-                AlertDialog.Builder(this)
-                        .setTitle("Record update")
-                        .setMessage("$initialDate - was\n$newDate - uncorrected is\n${Date(newDate.time + secondsAndMilliseconds)} - corrected is")
-                        .setPositiveButton(android.R.string.ok, { _, _ ->
-//                            val dao = SleepLogDatabase.getInstance(this).sleepLogDao()
-//                            val sleepLogData = SleepLogData(null, newDate.time, title.toString(), commentView.text.toString())
-//                            dao.update(sleepLogData)
-                            finish()
-                        })
-                        .show()
+                updateRecord()
+                finish()
             } else {
                 finish()
             }
             return true
         }
         return false
+    }
+
+    private fun updateRecord() {
+        val dao = SleepLogDatabase.getInstance(this).sleepLogDao()
+        val newRecord = SleepLogData(newDate.time, title.toString(), commentView.text.toString())
+        if (newDate.time == initialDate.time) {
+            dao.update(newRecord)
+        } else {
+            dao.insert(newRecord)
+            dao.delete(initialDate.time)
+        }
     }
 }

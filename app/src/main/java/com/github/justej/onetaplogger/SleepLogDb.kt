@@ -1,15 +1,20 @@
 package com.github.justej.onetaplogger
 
+import android.arch.persistence.db.SupportSQLiteDatabase
 import android.arch.persistence.room.*
 import android.arch.persistence.room.OnConflictStrategy.REPLACE
+import android.arch.persistence.room.migration.Migration
 import android.content.Context
+import android.support.annotation.NonNull
 
 @Entity(tableName = "sleepLog")
-data class SleepLogData(@PrimaryKey(autoGenerate = true) var id: Int?,
+data class SleepLogData(@PrimaryKey(autoGenerate = true)
                         @ColumnInfo(name = "timestamp") var timestamp: Long,
+                        @NonNull
                         @ColumnInfo(name = "label") var label: String,
+                        @NonNull
                         @ColumnInfo(name = "comment") var comment: String = "") {
-    constructor() : this(null, 0, "", "")
+    constructor() : this(0, "", "")
 }
 
 @Dao
@@ -39,7 +44,7 @@ interface SleepLogDao {
     fun delete(timestamp: Long)
 }
 
-@Database(entities = [(SleepLogData::class)], version = 1)
+@Database(entities = [(SleepLogData::class)], version = 2)
 abstract class SleepLogDatabase : RoomDatabase() {
     abstract fun sleepLogDao(): SleepLogDao
 
@@ -50,6 +55,7 @@ abstract class SleepLogDatabase : RoomDatabase() {
             if (INSTANCE == null) {
                 synchronized(SleepLogDatabase::class) {
                     INSTANCE = Room.databaseBuilder(context, SleepLogDatabase::class.java, "SleepLog.db")
+                            .addMigrations(Upgrade1to2())
                             .allowMainThreadQueries()
                             .build()
                 }
@@ -59,6 +65,23 @@ abstract class SleepLogDatabase : RoomDatabase() {
 
         fun destroyInstance() {
             INSTANCE = null
+        }
+    }
+
+    private class Upgrade1to2() : Migration(1, 2) {
+        /**
+         * Change DB schema:
+         * - create a table with new schema
+         * - migrate data to the new table
+         * - drop the old table
+         */
+        override fun migrate(database: SupportSQLiteDatabase) {
+            database.execSQL("CREATE TEMPORARY TABLE sleepLog_backup(timestamp INTEGER PRIMARY KEY NOT NULL, label TEXT NOT NULL, comment TEXT NOT NULL)")
+            database.execSQL("INSERT INTO sleepLog_backup SELECT timestamp, label, comment FROM sleepLog")
+            database.execSQL("DROP TABLE sleepLog")
+            database.execSQL("CREATE TABLE sleepLog(timestamp INTEGER PRIMARY KEY NOT NULL, label TEXT NOT NULL, comment TEXT NOT NULL)")
+            database.execSQL("INSERT INTO sleepLog SELECT timestamp, label, comment FROM sleepLog_backup")
+            database.execSQL("DROP TABLE sleepLog_backup")
         }
     }
 }

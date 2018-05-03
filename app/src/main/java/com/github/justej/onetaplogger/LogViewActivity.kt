@@ -31,9 +31,12 @@ class LogViewActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_log_view)
-
-        initDataset()
         viewManager = LinearLayoutManager(this)
+    }
+
+    override fun onResume() {
+        super.onResume()
+        initDataset()
         viewAdapter = LogViewAdapter(this, dataset, datasetSize)
 
         recyclerView = findViewById<RecyclerView>(R.id.log_recycler_view).apply {
@@ -78,7 +81,7 @@ class LogViewAdapter(
     }
 
     companion object {
-        val startLogRecordActivityOnClickListener =
+        private val startLogRecordActivityOnClickListener: (Context, SleepLogData) -> View.OnClickListener =
                 { context: Context, data: SleepLogData? ->
                     View.OnClickListener {
                         onClickHandler(data, context)
@@ -87,7 +90,7 @@ class LogViewAdapter(
         val startLogRecordActivityOnLongClickListener =
                 { context: Context, dataProvider: () -> SleepLogData? ->
                     View.OnLongClickListener {
-                        if (onClickHandler(dataProvider.invoke(), context)) return@OnLongClickListener true
+                        onClickHandler(dataProvider.invoke(), context)
                         true
                     }
                 }
@@ -136,10 +139,9 @@ class LogViewAdapter(
                 view.text = context.getString(R.string.NoData)
                 view.setBackgroundColor(context.getColor(R.color.background))
             } else {
-                val (_, timestamp, label, comment) = sleepLogData
-                val formattedTimestamp = "${DateFormat.getDateFormat(context).format(timestamp)} ${DateFormat.getTimeFormat(context).format(timestamp)}"
-                view.text = String.format(formatter, "$label\n$formattedTimestamp\n${commentFormatter.apply(comment)}")
-                view.setBackgroundColor(getLabelColor(context, label))
+                val formattedTimestamp = "${DateFormat.getDateFormat(context).format(sleepLogData.timestamp)} ${DateFormat.getTimeFormat(context).format(sleepLogData.timestamp)}"
+                view.text = String.format(formatter, "${sleepLogData.label}\n$formattedTimestamp\n${commentFormatter.apply(sleepLogData.comment)}")
+                view.setBackgroundColor(getLabelColor(context, sleepLogData.label))
             }
         }
 

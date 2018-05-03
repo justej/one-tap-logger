@@ -10,4 +10,5 @@
     <string name="comment">Comment</string>
     <string name="hint_enter_comment">Enter a comment here</string>
     <string name="Error">Oops, an error occurred</string>
+    <string name="main_activity_fatal_error_message">Couldn\'t start the application due to an exception: %1$s</string>
 </resources>

@@ -1,9 +1,13 @@
 package com.github.justej.onetaplogger
 
 import android.arch.core.util.Function
+import android.content.DialogInterface
 import android.content.Intent
+import android.database.SQLException
+import android.database.sqlite.SQLiteException
 import android.os.Bundle
 import android.support.design.widget.FloatingActionButton
+import android.support.v7.app.AlertDialog
 import android.support.v7.app.AppCompatActivity
 import android.util.Log
 import android.view.View
@@ -29,14 +33,37 @@ class MainActivity : AppCompatActivity() {
             val intent = Intent(this, LogViewActivity::class.java)
             startActivity(intent)
         }
-        val latest = SleepLogDatabase.getInstance(this).sleepLogDao().get(1, 0)
-        sleepLogData = if (latest.isEmpty()) null else latest[0]
-        findViewById<TextView>(R.id.last_action_text_view).setOnLongClickListener(
-                LogViewAdapter.startLogRecordActivityOnLongClickListener(this, { sleepLogData }))
+    }
 
-        LogViewAdapter.updateActionView(this, sleepLogData,
-                findViewById(last_action_text_view.id), MainActivity.singeLineFormatter,
-                getString(R.string.LastActionFormatter))
+    override fun onResume() {
+        try {
+            super.onResume()
+            val latest = SleepLogDatabase.getInstance(this).sleepLogDao().get(1, 0)
+            sleepLogData = if (latest.isEmpty()) null else latest[0]
+            findViewById<TextView>(R.id.last_action_text_view).setOnLongClickListener(
+                    LogViewAdapter.startLogRecordActivityOnLongClickListener(this, { sleepLogData }))
+
+            LogViewAdapter.updateActionView(this, sleepLogData,
+                    findViewById(last_action_text_view.id), MainActivity.singeLineFormatter,
+                    getString(R.string.LastActionFormatter))
+        } catch (e: SQLiteException) {
+            Log.e(this::class.qualifiedName, "SQLite exception caught", e)
+            showErrorDialog(e)
+        } catch (e: SQLException) {
+            Log.e(this::class.qualifiedName, "Generic SQL exception caught", e)
+            showErrorDialog(e)
+        } catch (e: Exception) {
+            Log.e(this::class.qualifiedName, "Unknown error", e)
+            showErrorDialog(e)
+        }
+    }
+
+    private fun showErrorDialog(e: Exception) {
+        AlertDialog.Builder(this)
+                .setTitle("Fatal error")
+                .setMessage(String.format(getString(R.string.main_activity_fatal_error_message), e))
+                .setPositiveButton(android.R.string.ok, { _: DialogInterface, _: Int -> finish() })
+                .show()
     }
 
     // TODO: extract "Last Action:" to a separate TextView
@@ -51,11 +78,15 @@ class MainActivity : AppCompatActivity() {
                 R.id.wake_up_fab -> getString(R.string.WakeUp)
                 else -> return
             }
-            sleepLogData = SleepLogData(null, timestamp, label)
+            sleepLogData = SleepLogData(timestamp, label)
             SleepLogDatabase.getInstance(this).sleepLogDao().insert(sleepLogData!!)
             LogViewAdapter.updateActionView(this, sleepLogData,
                     findViewById(last_action_text_view.id), MainActivity.singeLineFormatter,
                     getString(R.string.LastActionFormatter))
+        } catch (e: SQLiteException) {
+            Log.e(this::class.qualifiedName, "SQLite exception caught", e)
+        } catch (e: SQLException) {
+            Log.e(this::class.qualifiedName, "Generic SQL exception caught", e)
         } catch (e: Exception) {
             Log.e(this::class.qualifiedName, "Generic error", e)
         }
