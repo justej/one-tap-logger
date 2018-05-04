@@ -1,14 +1,14 @@
 <resources>
     <string name="app_name">One-Tap Logger</string>
-    <string name="Sleep">Sleep</string>
-    <string name="WakeUp">Wake up</string>
-    <string name="ChooseTheAction">Choose the action</string>
-    <string name="NoData">No data</string>
-    <string name="LastActionFormatter">Last action:\n%1$s</string>
-    <string name="WhatDoYouWant">What do you wish Master?</string>
-    <string name="LogRecordFormatter">%1$s at %2$s</string>
-    <string name="comment">Comment</string>
+    <string name="label_sleep">Sleep</string>
+    <string name="label_wake_up">Wake up</string>
+    <string name="label_choose_the_action">Choose the action</string>
+    <string name="label_last_action">Your last action was</string>
+    <string name="label_comment">Comment</string>
+    <string name="formatter_log_record">%1$s\n%2$s\n%3$s</string>
     <string name="hint_enter_comment">Enter a comment here</string>
-    <string name="Error">Oops, an error occurred</string>
-    <string name="main_activity_fatal_error_message">Couldn\'t start the application due to an exception: %1$s</string>
+    <string name="message_no_data">No data yet</string>
+    <string name="message_error">Oops, an error occurred</string>
+    <string name="message_main_activity_fatal_error">I\'m sorry but Android couldn\'t start the application due to an exception: %1$s</string>
+    <string name="title_no_data">No data</string>
 </resources>

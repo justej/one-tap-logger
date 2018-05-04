@@ -17,7 +17,7 @@ import java.util.*
 
 private const val START_OF_EPOCH = 1900
 
-// TODO: add "Undo" button (save without changes)
+// TODO: add "Undo" button (exit without saving changes)
 class LogRecordActivity : AppCompatActivity() {
     private var commentChanged = false
     private lateinit var newDate: Date
@@ -42,8 +42,8 @@ class LogRecordActivity : AppCompatActivity() {
         title = intent.getStringExtra(getString(R.string.extras_label))
         val color = getLabelColor(this, title)
         val style = when (title) {
-            getString(R.string.Sleep) -> R.style.datepicker_sleep
-            getString(R.string.WakeUp) -> R.style.datepicker_wake_up
+            getString(R.string.label_sleep) -> R.style.datepicker_sleep
+            getString(R.string.label_wake_up) -> R.style.datepicker_wake_up
             else -> {
                 AlertDialog.Builder(this)
                         .setTitle("Incorrect label '$title'")
@@ -112,7 +112,7 @@ class LogRecordActivity : AppCompatActivity() {
     override fun onOptionsItemSelected(item: MenuItem?): Boolean {
         if (android.R.id.home == item?.itemId) {
             if (newDate != initialDate || commentChanged) {
-                updateRecord()
+                updateRecordInDb()
                 finish()
             } else {
                 finish()
@@ -122,7 +122,7 @@ class LogRecordActivity : AppCompatActivity() {
         return false
     }
 
-    private fun updateRecord() {
+    private fun updateRecordInDb() {
         val dao = SleepLogDatabase.getInstance(this).sleepLogDao()
         val newRecord = SleepLogData(newDate.time, title.toString(), commentView.text.toString())
         if (newDate.time == initialDate.time) {

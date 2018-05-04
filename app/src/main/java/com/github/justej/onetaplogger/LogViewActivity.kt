@@ -1,6 +1,5 @@
 package com.github.justej.onetaplogger
 
-import android.arch.core.util.Function
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
@@ -99,7 +98,8 @@ class LogViewAdapter(
             try {
                 if (data == null) {
                     AlertDialog.Builder(context)
-                            .setTitle(R.string.NoData)
+                            .setTitle(R.string.title_no_data)
+                            .setMessage(R.string.message_no_data)
                             .show()
                     return true
                 }
@@ -111,10 +111,10 @@ class LogViewAdapter(
                 }
                 context.startActivity(intent)
             } catch (e: Exception) {
-                Log.e(this::class.qualifiedName, "Exception when calling intent ${LogRecordActivity::class.java.canonicalName}: $e")
+                Log.e(this::class.qualifiedName, "Exception while calling intent ${LogRecordActivity::class.java.canonicalName}: $e")
                 AlertDialog.Builder(context)
-                        .setTitle(R.string.NoData)
-                        .setMessage(R.string.Error)
+                        .setTitle(R.string.message_no_data)
+                        .setMessage(R.string.message_error)
                         .show()
             }
             return false
@@ -122,25 +122,19 @@ class LogViewAdapter(
 
         fun getLabelColor(context: Context, label: CharSequence): Int {
             return when (label) {
-                context.getString(R.string.Sleep) -> context.getColor(R.color.sleep)
-                context.getString(R.string.WakeUp) -> context.getColor(R.color.wake_up)
+                context.getString(R.string.label_sleep) -> context.getColor(R.color.sleep)
+                context.getString(R.string.label_wake_up) -> context.getColor(R.color.wake_up)
                 else -> context.getColor(R.color.background)
             }
         }
 
-        fun updateActionView(
-                context: Context,
-                sleepLogData: SleepLogData?,
-                view: TextView,
-                commentFormatter: Function<String, String> = Function { it },
-                formatter: String = "%s"
-        ) {
+        fun updateActionView(context: Context, sleepLogData: SleepLogData?, view: TextView) {
             if (sleepLogData == null) {
-                view.text = context.getString(R.string.NoData)
+                view.text = context.getString(R.string.message_no_data)
                 view.setBackgroundColor(context.getColor(R.color.background))
             } else {
                 val formattedTimestamp = "${DateFormat.getDateFormat(context).format(sleepLogData.timestamp)} ${DateFormat.getTimeFormat(context).format(sleepLogData.timestamp)}"
-                view.text = String.format(formatter, "${sleepLogData.label}\n$formattedTimestamp\n${commentFormatter.apply(sleepLogData.comment)}")
+                view.text = String.format(context.getString(R.string.formatter_log_record), sleepLogData.label, formattedTimestamp, sleepLogData.comment)
                 view.setBackgroundColor(getLabelColor(context, sleepLogData.label))
             }
         }
