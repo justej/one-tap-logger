@@ -15,10 +15,13 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
 import java.lang.Math.max
+import java.util.concurrent.TimeUnit
 
-private const val LIMIT = 100
+private const val LIMIT = 50
+private val MINUTES_PER_HOUR = TimeUnit.HOURS.toMinutes(1)
+private val HOURS_PER_DAY = TimeUnit.DAYS.toHours(1)
 
-// TODO: show time elapsed between consequent actions
+// TODO: restore list position on-resume (e.g. after record editing)
 class LogViewActivity : AppCompatActivity() {
 
     private val dataset = LruCache<Int, SleepLogData>(LIMIT)
@@ -59,7 +62,7 @@ class LogViewAdapter(
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         val logViewRecord = LayoutInflater.from(parent.context)
-                .inflate(R.layout.multiline_text_view, parent, false) as TextView
+                .inflate(R.layout.log_record_layout, parent, false) as ViewGroup
 
         return ViewHolder(logViewRecord)
     }
@@ -73,10 +76,38 @@ class LogViewAdapter(
             (0 until data.size).forEach { dataset.put(it + offset, data[it]) }
         }
 
-        holder.view.setOnClickListener(startLogRecordActivityOnClickListener(context, dataset[position]))
+        val sleepLogData = dataset[position]
+        holder.viewGroup.setBackgroundColor(getLabelColor(context, sleepLogData))
+        holder.viewGroup.setOnClickListener(startLogRecordActivityOnClickListener(context, sleepLogData))
         // TODO: offer to delete record on-long-click
 
-        updateActionView(context, dataset[position], holder.view)
+        updateActionView(context, holder.timestamp, sleepLogData)
+        updateElapsedView(context, holder.elapsed, dataset, position)
+    }
+
+    private fun updateElapsedView(context: Context, view: TextView, dataset: LruCache<Int, SleepLogData>, position: Int) {
+        if (datasetSize < 2 || position == datasetSize - 1) {
+            view.text = context.getString(R.string.message_no_data)
+        } else {
+            // TODO: extract to utility class
+            val diff = dataset[position].timestamp - dataset[position + 1].timestamp
+            val days = TimeUnit.MILLISECONDS.toDays(diff)
+            val hours = TimeUnit.MILLISECONDS.toHours(diff) % HOURS_PER_DAY
+            val minutes = TimeUnit.MILLISECONDS.toMinutes(diff) % MINUTES_PER_HOUR
+            var diffStr = (if (days != 0L) days.toString() + context.getString(R.string.label_abbrev_day) + " " else "") +
+                    (if (hours != 0L) hours.toString() + context.getString(R.string.label_abbrev_hour) + " " else "") +
+                    (if (minutes != 0L) minutes.toString() + context.getString(R.string.label_abbrev_minute) + " " else "")
+            if (diffStr.isEmpty()) {
+                diffStr = "0 " + context.getString(R.string.label_abbrev_minute)
+            }
+            // TODO: extract to utility class
+            val labelId: Int = when (dataset[position].label) {
+                context.getString(R.string.label_sleep) -> R.string.label_awaken
+                context.getString(R.string.label_wake_up) -> R.string.label_asleep
+                else -> R.string.label_empty
+            }
+            view.text = String.format(context.getString(R.string.formatter_space_separated_strings), diffStr, context.getString(labelId))
+        }
     }
 
     companion object {
@@ -120,26 +151,31 @@ class LogViewAdapter(
             return false
         }
 
-        fun getLabelColor(context: Context, label: CharSequence): Int {
-            return when (label) {
+        // TODO: extract to utility class
+        internal fun getLabelColor(context: Context, sleepLogData: SleepLogData?): Int {
+            if (sleepLogData == null) {
+                return context.getColor(R.color.background)
+            }
+
+            return when (sleepLogData.label) {
                 context.getString(R.string.label_sleep) -> context.getColor(R.color.sleep)
                 context.getString(R.string.label_wake_up) -> context.getColor(R.color.wake_up)
                 else -> context.getColor(R.color.background)
             }
         }
 
-        fun updateActionView(context: Context, sleepLogData: SleepLogData?, view: TextView) {
+        internal fun updateActionView(context: Context, view: TextView, sleepLogData: SleepLogData?) {
             if (sleepLogData == null) {
                 view.text = context.getString(R.string.message_no_data)
-                view.setBackgroundColor(context.getColor(R.color.background))
             } else {
                 val formattedTimestamp = "${DateFormat.getDateFormat(context).format(sleepLogData.timestamp)} ${DateFormat.getTimeFormat(context).format(sleepLogData.timestamp)}"
                 view.text = String.format(context.getString(R.string.formatter_log_record), sleepLogData.label, formattedTimestamp, sleepLogData.comment)
-                view.setBackgroundColor(getLabelColor(context, sleepLogData.label))
             }
         }
-
     }
 
-    class ViewHolder(val view: TextView) : RecyclerView.ViewHolder(view)
+    class ViewHolder(internal val viewGroup: ViewGroup) : RecyclerView.ViewHolder(viewGroup) {
+        internal val timestamp: TextView = viewGroup.findViewById(R.id.timestamp)
+        internal val elapsed: TextView = viewGroup.findViewById(R.id.elapsed_time)
+    }
 }

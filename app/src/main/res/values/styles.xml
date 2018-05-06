@@ -13,6 +13,7 @@
         <item name="colorPrimaryDark">@color/sleep</item>
         <item name="colorAccent">@color/sleep</item>
     </style>
+
     <style name="datepicker_wake_up" parent="Theme.AppCompat.Light.Dialog">
         <item name="colorPrimary">@color/wake_up</item>
         <item name="colorPrimaryDark">@color/wake_up</item>

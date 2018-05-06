@@ -3,11 +3,13 @@ package com.github.justej.onetaplogger
 import android.app.AlertDialog
 import android.app.DatePickerDialog
 import android.app.TimePickerDialog
+import android.database.sqlite.SQLiteException
 import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
 import android.text.Editable
 import android.text.TextWatcher
 import android.text.format.DateFormat
+import android.util.Log
 import android.view.MenuItem
 import android.widget.DatePicker
 import android.widget.EditText
@@ -35,12 +37,12 @@ class LogRecordActivity : AppCompatActivity() {
 
         val timestamp: Long = intent.getLongExtra(getString(R.string.extras_timestamp), 0)
         val comment: String = intent.getStringExtra(getString(R.string.extras_comment))
-        newDate = Date(timestamp)
         initialDate = Date(timestamp)
-        secondsAndMilliseconds = initialDate.time - Date(initialDate.year, initialDate.month, initialDate.date, initialDate.hours, initialDate.minutes).time
+        newDate = Date(initialDate.year, initialDate.month, initialDate.date, initialDate.hours, initialDate.minutes)
+        secondsAndMilliseconds = initialDate.time - newDate.time
 
         title = intent.getStringExtra(getString(R.string.extras_label))
-        val color = getLabelColor(this, title)
+        val color = getLabelColor(this, SleepLogData(timestamp, title.toString(), comment))
         val style = when (title) {
             getString(R.string.label_sleep) -> R.style.datepicker_sleep
             getString(R.string.label_wake_up) -> R.style.datepicker_wake_up
@@ -57,7 +59,7 @@ class LogRecordActivity : AppCompatActivity() {
             text = DateFormat.getDateFormat(this@LogRecordActivity).format(timestamp)
             setBackgroundColor(color)
             setOnClickListener {
-                val datePickerDialog = DatePickerDialog(
+                DatePickerDialog(
                         this@LogRecordActivity,
                         style,
                         { datePicker: DatePicker, year: Int, month: Int, day: Int ->
@@ -67,15 +69,14 @@ class LogRecordActivity : AppCompatActivity() {
                         newDate.year + START_OF_EPOCH,
                         newDate.month,
                         newDate.date
-                )
-                datePickerDialog.show()
+                ).show()
             }
         }
         with(timeView) {
             text = DateFormat.getTimeFormat(this@LogRecordActivity).format(timestamp)
             setBackgroundColor(color)
             setOnClickListener {
-                val timePickerDialog = TimePickerDialog(
+                TimePickerDialog(
                         this@LogRecordActivity,
                         style,
                         { timePicker, hours, minutes ->
@@ -85,8 +86,7 @@ class LogRecordActivity : AppCompatActivity() {
                         newDate.hours,
                         newDate.minutes,
                         DateFormat.is24HourFormat(context)
-                )
-                timePickerDialog.show()
+                ).show()
             }
         }
         with(commentView) {
@@ -111,25 +111,44 @@ class LogRecordActivity : AppCompatActivity() {
 
     override fun onOptionsItemSelected(item: MenuItem?): Boolean {
         if (android.R.id.home == item?.itemId) {
-            if (newDate != initialDate || commentChanged) {
-                updateRecordInDb()
-                finish()
-            } else {
-                finish()
-            }
+            handleHomeButton()
             return true
         }
         return false
     }
 
-    private fun updateRecordInDb() {
-        val dao = SleepLogDatabase.getInstance(this).sleepLogDao()
-        val newRecord = SleepLogData(newDate.time, title.toString(), commentView.text.toString())
-        if (newDate.time == initialDate.time) {
-            dao.update(newRecord)
+    private fun handleHomeButton() {
+        val newTimestamp = newDate.time + secondsAndMilliseconds
+        if (newTimestamp != initialDate.time || commentChanged) {
+            if (updateRecordInDb()) {
+                finish()
+            } else {
+                AlertDialog.Builder(this)
+                        .setTitle(R.string.title_error)
+                        .setMessage(R.string.message_db_update_failed)
+                        .setPositiveButton(android.R.string.ok, { _, _ -> finish() })
+                        .show()
+            }
         } else {
-            dao.insert(newRecord)
-            dao.delete(initialDate.time)
+            finish()
+        }
+    }
+
+    private fun updateRecordInDb(): Boolean {
+        return try {
+            val dao = SleepLogDatabase.getInstance(this).sleepLogDao()
+            val newTimestamp = newDate.time + secondsAndMilliseconds
+            val newRecord = SleepLogData(newTimestamp, title.toString(), commentView.text.toString())
+            if (newTimestamp == initialDate.time) {
+                dao.update(newRecord)
+            } else {
+                dao.insert(newRecord)
+                dao.delete(initialDate.time)
+            }
+            true
+        } catch (e: SQLiteException) {
+            Log.e(LogRecordActivity::class.qualifiedName, "Exception on record update", e)
+            false
         }
     }
 }

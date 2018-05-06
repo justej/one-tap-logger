@@ -37,7 +37,9 @@ class MainActivity : AppCompatActivity() {
             findViewById<TextView>(R.id.last_action).setOnLongClickListener(
                     LogViewAdapter.startLogRecordActivityOnLongClickListener(this, { sleepLogData }))
 
-            LogViewAdapter.updateActionView(this, sleepLogData, findViewById(last_action.id))
+            val lastAction = findViewById<TextView>(last_action.id)
+            lastAction.setBackgroundColor(LogViewAdapter.getLabelColor(this, sleepLogData))
+            LogViewAdapter.updateActionView(this, lastAction, sleepLogData)
         } catch (e: Exception) {
             Log.e(this::class.qualifiedName, "Oops!", e)
             showFatalErrorDialog(e)
@@ -65,7 +67,9 @@ class MainActivity : AppCompatActivity() {
             }
             sleepLogData = SleepLogData(timestamp, label)
             SleepLogDatabase.getInstance(this).sleepLogDao().insert(sleepLogData!!)
-            LogViewAdapter.updateActionView(this, sleepLogData, findViewById(last_action.id))
+            val lastAction = findViewById<TextView>(last_action.id)
+            lastAction.setBackgroundColor(LogViewAdapter.getLabelColor(this, sleepLogData))
+            LogViewAdapter.updateActionView(this, lastAction, sleepLogData)
         } catch (e: Exception) {
             Log.e(this::class.qualifiedName, "Generic error", e)
         }

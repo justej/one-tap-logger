@@ -6,9 +6,18 @@
     <string name="label_last_action">Your last action was</string>
     <string name="label_comment">Comment</string>
     <string name="formatter_log_record">%1$s\n%2$s\n%3$s</string>
+    <string name="formatter_space_separated_strings">%1$s %2$s</string>
     <string name="hint_enter_comment">Enter a comment here</string>
     <string name="message_no_data">No data yet</string>
     <string name="message_error">Oops, an error occurred</string>
+    <string name="message_db_update_failed">Failed to update database</string>
     <string name="message_main_activity_fatal_error">I\'m sorry but Android couldn\'t start the application due to an exception: %1$s</string>
+    <string name="title_error">Oops, an error</string>
     <string name="title_no_data">No data</string>
+    <string name="label_awaken">awaken</string>
+    <string name="label_asleep">asleep</string>
+    <string name="label_empty" />
+    <string name="label_abbrev_day">d</string>
+    <string name="label_abbrev_hour">h</string>
+    <string name="label_abbrev_minute">m</string>
 </resources>

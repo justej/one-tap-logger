@@ -26,6 +26,7 @@
         android:background="@drawable/rounded_button"
         android:ellipsize="end"
         android:lines="3"
+        android:padding="@dimen/default_text_padding"
         android:textAlignment="center"
         android:textAllCaps="false"
         android:textSize="@dimen/default_text_size"
