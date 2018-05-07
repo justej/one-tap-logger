@@ -70,27 +70,31 @@ class LogViewAdapter(
     override fun getItemCount() = datasetSize
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-        if (dataset[position] == null) {
+        var data: SleepLogData? = dataset[position]
+        var dataPrev: SleepLogData? = dataset[position + 1]
+
+        if (data == null || dataPrev == null) {
             val offset = max(position - LIMIT / 2, 0)
-            val data = SleepLogDatabase.getInstance(context).sleepLogDao().get(LIMIT, offset)
-            (0 until data.size).forEach { dataset.put(it + offset, data[it]) }
+            val dataChunk = SleepLogDatabase.getInstance(context).sleepLogDao().get(LIMIT, offset)
+            (0 until dataChunk.size).forEach { dataset.put(it + offset, dataChunk[it]) }
+            data = dataset[position]
+            dataPrev = dataset[position + 1]
         }
 
-        val sleepLogData = dataset[position]
-        holder.viewGroup.setBackgroundColor(getLabelColor(context, sleepLogData))
-        holder.viewGroup.setOnClickListener(startLogRecordActivityOnClickListener(context, sleepLogData))
+        holder.viewGroup.setBackgroundColor(getLabelColor(context, data))
+        holder.viewGroup.setOnClickListener(startLogRecordActivityOnClickListener(context, data))
         // TODO: offer to delete record on-long-click
 
-        updateActionView(context, holder.timestamp, sleepLogData)
-        updateElapsedView(context, holder.elapsed, dataset, position)
+        updateActionView(context, holder.timestamp, data)
+        updateElapsedView(context, holder.elapsed, data, dataPrev)
     }
 
-    private fun updateElapsedView(context: Context, view: TextView, dataset: LruCache<Int, SleepLogData>, position: Int) {
-        if (datasetSize < 2 || position == datasetSize - 1) {
+    private fun updateElapsedView(context: Context, view: TextView, data: SleepLogData?, dataPrev: SleepLogData?) {
+        if (data == null || dataPrev == null) {
             view.text = context.getString(R.string.message_no_data)
         } else {
             // TODO: extract to utility class
-            val diff = dataset[position].timestamp - dataset[position + 1].timestamp
+            val diff = data.timestamp - dataPrev.timestamp
             val days = TimeUnit.MILLISECONDS.toDays(diff)
             val hours = TimeUnit.MILLISECONDS.toHours(diff) % HOURS_PER_DAY
             val minutes = TimeUnit.MILLISECONDS.toMinutes(diff) % MINUTES_PER_HOUR
@@ -101,7 +105,7 @@ class LogViewAdapter(
                 diffStr = "0 " + context.getString(R.string.label_abbrev_minute)
             }
             // TODO: extract to utility class
-            val labelId: Int = when (dataset[position].label) {
+            val labelId: Int = when (data.label) {
                 context.getString(R.string.label_sleep) -> R.string.label_awaken
                 context.getString(R.string.label_wake_up) -> R.string.label_asleep
                 else -> R.string.label_empty
@@ -111,7 +115,7 @@ class LogViewAdapter(
     }
 
     companion object {
-        private val startLogRecordActivityOnClickListener: (Context, SleepLogData) -> View.OnClickListener =
+        private val startLogRecordActivityOnClickListener: (Context, SleepLogData?) -> View.OnClickListener =
                 { context: Context, data: SleepLogData? ->
                     View.OnClickListener {
                         onClickHandler(data, context)
